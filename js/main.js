@@ -10,7 +10,7 @@ function preload() {
     game.load.spritesheet('steve', 'assets/super-steve.png', 49, 37);
     game.load.spritesheet('bug', 'assets/enemies/Bug.png', 32, 32);
     game.load.spritesheet('kaboom', 'assets/explode.png', 128, 128);
-    //  Firefox doesn't support mp3 files, so use ogg
+    //  Firefox doesn't support mp3 files, so using ogg file instead
     game.load.audio('super', ['assets/audio/supermanTheme.ogg']);
 
 }
@@ -89,40 +89,43 @@ function create() {
        align: "left"
    });
 
-  
+  // Images of code floating in the background
   code = game.add.group();
   code.enableBody = true;
   brackets = game.add.group();
   brackets.enableBody = true;
   game.time.events.loop(550, createCode, this);
+
+  // Adding the bug bots
   enemies = game.add.group();
   enemies.enableBody = true;
   game.time.events.loop(300, createSprite, this);
   enemies.scale.set(1.5);
 
+  // Adding the player
   steve = game.add.sprite(700, 200, 'steve');
   steve.scale.set(2);
 
+  // Physics added to player
   game.physics.arcade.enable(steve);
   steve.body.bounce.y = 0.2;
   steve.body.gravity.y = 300;
   steve.body.collideWorldBounds = true;
 
-  // steve.animations.add('left', [0], true);
-  // steve.animations.add('right', [1], true);
-
 
   //  An explosion pool
     explosions = game.add.group();
     explosions.createMultiple(30, 'kaboom');
-    explosions.forEach(setupInvader, this);
+    explosions.forEach(setupBugBot, this);
 
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
+    
+    // Player's weapon added
     pops = game.add.group();
     game.physics.enable(pops, Phaser.Physics.ARCADE);
  
 }
+
 
 var shotTimer = 0;
 function shoot() {
@@ -149,11 +152,11 @@ function shoot() {
 
 
 
-function setupInvader (invader) {
+function setupBugBot (bugBot) {
 
-    invader.anchor.x = 0.5;
-    invader.anchor.y = 0.5;
-    invader.animations.add('kaboom');
+    bugBot.anchor.x = 0.5;
+    bugBot.anchor.y = 0.5;
+    bugBot.animations.add('kaboom');
 
 }
 
@@ -207,7 +210,6 @@ function update() {
   }
   else
   {
-      //  Stand still
       steve.animations.stop();
 
       steve.frame = 0;
@@ -236,9 +238,9 @@ function update() {
   filter.update(game.input.keyboard);
 }
 
+// when steve hits bug they both explode
 function collisionHandler (bug, steve) {
 
-    //  When steve hits a bug we kill them both
     bug.kill();
     steve.kill();
     
@@ -252,7 +254,7 @@ function collisionHandler (bug, steve) {
 
 function popHandler (bug, pops) {
 
-    //  When popp hits a bug we kill them both
+    //  When popp hits a bug they both explode
     bug.kill();
     pops.kill();
 
@@ -280,6 +282,7 @@ function checkSprite(sprite) {
 
 }
 
+// Adds points to scoreboard
 function updateText() {
 
     count++;
